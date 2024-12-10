@@ -1,1 +1,1 @@
-# line_bot_ImagemapSendMessage
+# line_bot_TemplateSendMessage

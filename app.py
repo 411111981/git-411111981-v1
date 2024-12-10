@@ -14,11 +14,11 @@ import re
 app = Flask(__name__)
 
 # 必須放上自己的Channel Access Token
-line_bot_api = LineBotApi('xmkOf22lArmJR4247sWEOdFV+390NAONBp1G1jxHv/bp376RT64cxOCjbZdocTJHSchTBE6NSoXZ/9Ld+Okbny0FwizUN28Vysbqj7MWvgCk3vLzcSfjhTkzMjh35lobCZNpmFTNVzcrVQg3qpdXigdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi('tU78JT+AY0oCh7EMnGbcKiaaEOKHouRi+0nLdTnRHYlDZdyXJUO56590y4XULW/6Ou5E25+/iObL2BseWERhyi/3zcZCD24SxRVCxsICo6YQ6FVQhsCpB2Wcm6lEBqFw7KGJbYoCTplBHt7F1DzkHQdB04t89/1O/w1cDnyilFU=')
 # 必須放上自己的Channel Secret
-handler = WebhookHandler('21fcd2977f6d11f5eae5eb84a922b428')
+handler = WebhookHandler('ae0dc35bd773b4cc853dd2c6a0185c0d')
 
-line_bot_api.push_message('U048ad2fe2026b629fe4368f32e4c8c7a', TextSendMessage(text='你可以開始了'))
+line_bot_api.push_message('U317bc13782dca0fd51cb93c04118f62f', TextSendMessage(text='你可以開始了'))
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -44,38 +44,30 @@ def callback():
 def handle_message(event):
     message = text=event.message.text
     if re.match('告訴我秘密',message):
-        imagemap_message = ImagemapSendMessage(
-            base_url='https://i.imgur.com/xMUKNtn.jpg',
-            alt_text='組圖訊息',
-            base_size=BaseSize(height=2000, width=2000),
+        buttons_template_message = TemplateSendMessage(
+        alt_text='這是樣板傳送訊息',
+        template=ButtonsTemplate(
+            thumbnail_image_url='https://i.imgur.com/kNBl363.jpg',
+            title='中華民國',
+            text='選單功能－TemplateSendMessage',
             actions=[
-                URIImagemapAction(
-                    link_uri='https://en.wikipedia.org/wiki/Cebu',
-                    area=ImagemapArea(
-                        x=0, y=0, width=1000, height=1000
-                    )
+                PostbackAction(
+                    label='這是PostbackAction',
+                    display_text='顯示文字',
+                    data='實際資料'
                 ),
-                URIImagemapAction(
-                    link_uri='https://en.wikipedia.org/wiki/Taipei',
-                    area=ImagemapArea(
-                        x=1000, y=0, width=1000, height=1000
-                    )
+                MessageAction(
+                    label='這是MessageAction',
+                    text='實際資料'
                 ),
-                URIImagemapAction(
-                    link_uri='https://en.wikipedia.org/wiki/Osaka',
-                    area=ImagemapArea(
-                        x=0, y=1000, width=1000, height=1000
-                    )
-                ),
-                URIImagemapAction(
-                    link_uri='https://en.wikipedia.org/wiki/Shanghai',
-                    area=ImagemapArea(
-                        x=1000, y=1000, width=1000, height=1000
-                    )
+                URIAction(
+                    label='這是URIAction',
+                    uri='https://en.wikipedia.org/wiki/Taiwan'
                 )
             ]
         )
-        line_bot_api.reply_message(event.reply_token, imagemap_message)
+    )
+        line_bot_api.reply_message(event.reply_token, buttons_template_message)
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
 #主程式

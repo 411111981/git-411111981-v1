@@ -14,11 +14,12 @@ import re
 app = Flask(__name__)
 
 # 必須放上自己的Channel Access Token
-line_bot_api = LineBotApi('tU78JT+AY0oCh7EMnGbcKiaaEOKHouRi+0nLdTnRHYlDZdyXJUO56590y4XULW/6Ou5E25+/iObL2BseWERhyi/3zcZCD24SxRVCxsICo6YQ6FVQhsCpB2Wcm6lEBqFw7KGJbYoCTplBHt7F1DzkHQdB04t89/1O/w1cDnyilFU=')
-# 必須放上自己的Channel Secret
-handler = WebhookHandler('ae0dc35bd773b4cc853dd2c6a0185c0d')
+line_bot_api = LineBotApi('AY3MtzOw1jwTi3/F391JQKg09Oen4chaHnwV2xYYpm0NBn13bHtN/T9D3Av5KoTVP5tD7+ylwOhcnWGUnf474y2q8kYgklg0hUgaZ+uW3TaYU9KbfNdM3W6ulPzalLLgqV0ODuB9DjzRrK0TYBMs2gdB04t89/1O/w1cDnyilFU=')
 
-line_bot_api.push_message('U317bc13782dca0fd51cb93c04118f62f', TextSendMessage(text='你可以開始了'))
+# 必須放上自己的Channel Secret
+handler = WebhookHandler('bc9bb9ac52c29ba269dec9d2b18b1689')
+
+line_bot_api.push_message('Uf96bcc7b32c11166a6d2469ad5ddf52b', TextSendMessage(text='你可以開始了'))
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -44,30 +45,59 @@ def callback():
 def handle_message(event):
     message = text=event.message.text
     if re.match('告訴我秘密',message):
-        buttons_template_message = TemplateSendMessage(
-        alt_text='這是樣板傳送訊息',
-        template=ButtonsTemplate(
-            thumbnail_image_url='https://i.imgur.com/kNBl363.jpg',
-            title='中華民國',
-            text='選單功能－TemplateSendMessage',
-            actions=[
-                PostbackAction(
-                    label='這是PostbackAction',
-                    display_text='顯示文字',
-                    data='實際資料'
-                ),
-                MessageAction(
-                    label='這是MessageAction',
-                    text='實際資料'
-                ),
-                URIAction(
-                    label='這是URIAction',
-                    uri='https://en.wikipedia.org/wiki/Taiwan'
-                )
-            ]
+        carousel_template_message = TemplateSendMessage(
+            alt_text='熱門旅行景點',
+            template=CarouselTemplate(
+                columns=[
+                    CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/kNBl363.jpg',
+                        title='台灣',
+                        text='taiwan',
+                        actions=[
+                            MessageAction(
+                                label='熱門景點',
+                                text='台北101、逢甲夜市、墾丁...'
+                            ),
+                            URIAction(
+                                label='馬上查看',
+                                uri='https://en.wikipedia.org/wiki/Taiwan'
+                            )
+                        ]
+                    ),
+                    CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/GBPcUEP.png',
+                        title='日本',
+                        text='Japan',
+                        actions=[
+                            MessageAction(
+                                label='熱門景點',
+                                text='金閣寺、淺草寺、北海道...'
+                            ),
+                            URIAction(
+                                label='馬上查看',
+                                uri='https://en.wikipedia.org/wiki/Japan'
+                            )
+                        ]
+                    ),
+                    CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/kRW5zTO.png',
+                        title='韓國',
+                        text='Korea',
+                        actions=[
+                            MessageAction(
+                                label='熱門景點',
+                                text='釜山、濟州島、首爾塔...'
+                            ),
+                            URIAction(
+                                label='馬上查看',
+                                uri='https://en.wikipedia.org/wiki/Korea'
+                            )
+                        ]
+                    )
+                ]
+            )
         )
-    )
-        line_bot_api.reply_message(event.reply_token, buttons_template_message)
+        line_bot_api.reply_message(event.reply_token, carousel_template_message)
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
 #主程式
